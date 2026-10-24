@@ -30,14 +30,18 @@ import requests
 # =====================================================================
 
 # توکن از بخش Environment سایت Render خونده می‌شه (متغیر BOT_TOKEN). توی گیت‌هاب ننویسش.
-TOKEN = os.environ.get("8802246679:AAFGshfJ2NqGvpJ4k_KuuRjm_zZAR6Ty6Iw", "توکن رباتت اینجا")
+TOKEN = os.environ.get("8802246679:AAFGshfJ2NqGvpJ4k_KuuRjm_zZAR6Ty6Iw", "8802246679:AAFGshfJ2NqGvpJ4k_KuuRjm_zZAR6Ty6Iw")
 CHANNEL = "@nakama_iran"                      # یوزرنیم کانال با @
 CHANNEL_NAME = "Nakama_Iran"           # اسمی که توی «Join us» دیده می‌شه
 CHANNEL_LINK = "https://t.me/nakama_iran"     # لینک کانال (بدون @). کانال خصوصی: لینک دعوت
 TIMEZONE = "Asia/Tehran"
 
-# اگه True باشه، همه پست‌ها همین الان یک بار فرستاده می‌شن (برای تست)
+# اگه True باشه، همه پست‌ها همین الان یک بار فرستاده می‌شن و برنامه تموم می‌شه (فقط برای تست روی کامپیوتر خودت)
 TEST = False
+
+# تست سریع روی Render: اسم یک پست رو بنویس تا ربات همین که روشن شد، همون پست رو یک بار بفرسته.
+# گزینه‌ها: "onepiece" یا "anime" یا "movies" یا "quiz" یا "poll". بعد از تست دوباره خالی‌ش کن: ""
+TEST_ON_START = ""
 
 # ---- بخش هوش مصنوعی (فعلاً خاموش) ----
 USE_AI = False
@@ -48,7 +52,7 @@ AI_DRAFT_TIME = "03:00"  # ساعت ساخت پیش‌نویس‌ها
 
 # ساعت ارسال هر پست
 TIMES = {
-    "onepiece": "22:44",
+    "onepiece": "22:55",
     "anime": "12:00",
     "movies": "15:00",
     "watch": "18:00",
@@ -74,10 +78,10 @@ def tg(method, **payload):
         r = requests.post(f"{API}/{method}", json=payload, timeout=30)
         data = r.json()
         if not data.get("ok"):
-            print(f"[خطای تلگرام] {method}: {data.get('description')}")
+            print(f"[خطای تلگرام] {method}: {data.get('description')}", flush=True)
         return data
     except Exception as ex:
-        print(f"[خطای اینترنت] {method}: {ex}")
+        print(f"[خطای اینترنت] {method}: {ex}", flush=True)
         return None
 
 
@@ -126,7 +130,7 @@ def pick_blocks(name, n):
 
     if "{" in content or "}" in content:
         if content.count("{") != content.count("}"):
-            print(f"[هشدار] توی {name} تعداد {{ و }} برابر نیست. یکی‌شون جا افتاده.")
+            print(f"[هشدار] توی {name} تعداد {{ و }} برابر نیست. یکی‌شون جا افتاده.", flush=True)
         blocks = [b.strip() for b in re.findall(r"\{(.*?)\}", content, flags=re.DOTALL)]
         blocks = [b for b in blocks if b]
     else:
@@ -272,7 +276,7 @@ def job_make_drafts():
         try:
             make_fact_draft()
         except Exception as ex:
-            print("[خطای هوش مصنوعی]", ex)
+            print("[خطای هوش مصنوعی]", ex, flush=True)
         time.sleep(8)  # فاصله بین درخواست‌ها برای اینکه سقف رایگان پر نشه
 
 
@@ -336,6 +340,22 @@ def main():
 
     start_web_server()
     print("ربات روشن شد.", flush=True)
+
+    if TEST_ON_START:
+        funcs = {
+            "onepiece": post_onepiece, "anime": post_anime, "movies": post_movies,
+            "quiz": post_quiz, "poll": post_poll,
+        }
+        if TEST_ON_START in funcs:
+            print(f"تست: فرستادن پست {TEST_ON_START} ...", flush=True)
+            try:
+                funcs[TEST_ON_START]()
+                print("تست انجام شد.", flush=True)
+            except Exception as ex:
+                print(f"[خطا] تست: {ex}", flush=True)
+        else:
+            print(f"[خطا] اسم TEST_ON_START اشتباهه: {TEST_ON_START}", flush=True)
+
     done = set()
     while True:
         now = datetime.now(ZoneInfo(TIMEZONE))
@@ -347,7 +367,7 @@ def main():
             try:
                 schedule[key]()
             except Exception as ex:
-                print(f"[خطا] {schedule[key].__name__}: {ex}")
+                print(f"[خطا] {schedule[key].__name__}: {ex}", flush=True)
         time.sleep(20)
 
 
