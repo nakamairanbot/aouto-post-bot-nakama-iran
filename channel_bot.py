@@ -41,7 +41,7 @@ TEST = False
 
 # تست سریع روی Render: اسم یک پست رو بنویس تا ربات همین که روشن شد، همون پست رو یک بار بفرسته.
 # گزینه‌ها: "onepiece" یا "anime" یا "movies" یا "quiz" یا "poll". بعد از تست دوباره خالی‌ش کن: ""
-TEST_ON_START = ""
+TEST_ON_START = "onepiece"
 
 # ---- بخش هوش مصنوعی (فعلاً خاموش) ----
 USE_AI = False
@@ -52,7 +52,7 @@ AI_DRAFT_TIME = "03:00"  # ساعت ساخت پیش‌نویس‌ها
 
 # ساعت ارسال هر پست
 TIMES = {
-    "onepiece": "22:55",
+    "onepiece": "11:06",
     "anime": "12:00",
     "movies": "15:00",
     "watch": "18:00",
