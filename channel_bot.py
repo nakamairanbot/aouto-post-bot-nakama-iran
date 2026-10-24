@@ -26,10 +26,10 @@ import requests
 # تنظیمات (فقط این بخش رو عوض کن)
 # =====================================================================
 
-TOKEN = "توکن رباتت اینجا"
-CHANNEL = "@اسم_کانالت"                      # یوزرنیم کانال با @
-CHANNEL_NAME = "اسم نمایشی کانالت"           # اسمی که توی «Join us» دیده می‌شه
-CHANNEL_LINK = "https://t.me/اسم_کانالت"     # لینک کانال (بدون @). کانال خصوصی: لینک دعوت
+TOKEN = "8802246679:AAFGshfJ2NqGvpJ4k_KuuRjm_zZAR6Ty6Iw"
+CHANNEL = "@nakama_iran"                      # یوزرنیم کانال با @
+CHANNEL_NAME = "Nakama_Iran"           # اسمی که توی «Join us» دیده می‌شه
+CHANNEL_LINK = "https://t.me/nakama_iran"     # لینک کانال (بدون @). کانال خصوصی: لینک دعوت
 TIMEZONE = "Asia/Tehran"
 
 # اگه True باشه، همه پست‌ها همین الان یک بار فرستاده می‌شن (برای تست)
