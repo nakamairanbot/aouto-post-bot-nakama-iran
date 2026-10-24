@@ -14,10 +14,13 @@
 """
 
 import html
+import os
 import random
 import re
+import threading
 import time
 from datetime import datetime
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from zoneinfo import ZoneInfo
 
 import requests
@@ -26,7 +29,8 @@ import requests
 # تنظیمات (فقط این بخش رو عوض کن)
 # =====================================================================
 
-TOKEN = "8802246679:AAFGshfJ2NqGvpJ4k_KuuRjm_zZAR6Ty6Iw"
+# توکن از بخش Environment سایت Render خونده می‌شه (متغیر BOT_TOKEN). توی گیت‌هاب ننویسش.
+TOKEN = os.environ.get("8802246679:AAFGshfJ2NqGvpJ4k_KuuRjm_zZAR6Ty6Iw", "توکن رباتت اینجا")
 CHANNEL = "@nakama_iran"                      # یوزرنیم کانال با @
 CHANNEL_NAME = "Nakama_Iran"           # اسمی که توی «Join us» دیده می‌شه
 CHANNEL_LINK = "https://t.me/nakama_iran"     # لینک کانال (بدون @). کانال خصوصی: لینک دعوت
@@ -349,4 +353,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
