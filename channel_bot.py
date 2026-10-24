@@ -37,7 +37,7 @@ TEST = False
 
 # ---- بخش هوش مصنوعی (فعلاً خاموش) ----
 USE_AI = False
-GEMINI_KEY = ""          # کلید رایگان از Google AI Studio
+GEMINI_KEY = os.environ.get("GEMINI_KEY", "")  # کلید رایگان از Google AI Studio (متغیر GEMINI_KEY توی Render)
 GEMINI_MODEL = ""        # اسم مدل رو از لیست AI Studio کپی کن (اسم‌ها زود عوض می‌شن)
 AI_DRAFTS_PER_DAY = 10   # هر روز چند فکت پیش‌نویس بسازه
 AI_DRAFT_TIME = "03:00"  # ساعت ساخت پیش‌نویس‌ها
@@ -290,6 +290,34 @@ def build_schedule():
     return schedule
 
 
+# =====================================================================
+# سرور کوچک (فقط برای اینکه Render و UptimeRobot بتونن سرویس رو زنده نگه دارن)
+# =====================================================================
+
+class PingHandler(BaseHTTPRequestHandler):
+    def _ok(self):
+        self.send_response(200)
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self.end_headers()
+
+    def do_GET(self):
+        self._ok()
+        self.wfile.write(b"OK")
+
+    def do_HEAD(self):
+        self._ok()
+
+    def log_message(self, *args):
+        pass  # لاگ‌های اضافه چاپ نشه
+
+
+def start_web_server():
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(("0.0.0.0", port), PingHandler)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    print(f"سرور کوچک روی پورت {port} روشن شد.", flush=True)
+
+
 def main():
     schedule = build_schedule()
 
@@ -302,7 +330,8 @@ def main():
         print("تست تموم شد.")
         return
 
-    print("ربات روشن شد.")
+    start_web_server()
+    print("ربات روشن شد.", flush=True)
     done = set()
     while True:
         now = datetime.now(ZoneInfo(TIMEZONE))
@@ -320,3 +349,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
